@@ -1,4 +1,4 @@
-package org.lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

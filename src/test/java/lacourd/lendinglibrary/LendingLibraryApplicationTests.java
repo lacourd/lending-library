@@ -1,4 +1,4 @@
-package org.lacourd.lendinglibrary;
+package lacourd.lendinglibrary;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,8 +1,9 @@
-package org.lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -12,21 +13,19 @@ public class GameDetails extends AbstractEntity{
     @Size(max=500, message = "Description too long!")
     private String description;
 
-    @NotBlank(message = "Storage location is required")
-    private String storageLocation;
-
     @NotNull
+    @Min(1)
     private int minPlayers;
 
     @NotNull
+    @Max(12)
     private int maxPlayers;
 
     @OneToOne(mappedBy = "gameDetails")
     private Game game;
 
-    public GameDetails(String description, String storageLocation, int minPlayers, int maxPlayers) {
+    public GameDetails(String description, int minPlayers, int maxPlayers) {
         this.description = description;
-        this.storageLocation = storageLocation;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
     }
@@ -39,14 +38,6 @@ public class GameDetails extends AbstractEntity{
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getStorageLocation() {
-        return storageLocation;
-    }
-
-    public void setStorageLocation(String storageLocation) {
-        this.storageLocation = storageLocation;
     }
 
     public int getMinPlayers() {

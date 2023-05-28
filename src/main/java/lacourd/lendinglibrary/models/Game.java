@@ -1,9 +1,6 @@
-package org.lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,6 +21,9 @@ public class Game extends AbstractEntity{
     @ManyToOne
     @NotNull(message = "Storage location is required")
     private StorageLocation storageLocation;
+
+    @OneToMany
+    private GameExpansion gameExpansion;
 
     public Game(String name, StorageLocation storageLocation) {
         this.name = name;
@@ -54,6 +54,14 @@ public class Game extends AbstractEntity{
 
     public void setStorageLocation(StorageLocation storageLocation) {
         this.storageLocation = storageLocation;
+    }
+
+    public GameExpansion getGameExpansion() {
+        return gameExpansion;
+    }
+
+    public void setGameExpansion(GameExpansion gameExpansion) {
+        this.gameExpansion = gameExpansion;
     }
 
     @Override

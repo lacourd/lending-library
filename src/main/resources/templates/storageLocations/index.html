@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body class="container">
+<header th:replace="fragments :: header"></header>
+<p th:unless="${locations} and ${locations.size()}">No storage locations!</p>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Storage Location</th>
+    </tr>
+    </thead>
+    <tr th:each="location : ${locations}">
+        <td><a th:text="${location.name}" th:href="'/games?locationId=' + ${location.id}"></a></td>
+    </tr>
+</table>
+
+</body>
+</html>

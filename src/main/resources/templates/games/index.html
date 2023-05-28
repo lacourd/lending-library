@@ -1,7 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-<head th:replace="fragment :: head"></head>
-<body>
- <h1>Will anything work?</h1>
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<nav th:replace="fragments :: header"></nav>
+
+<p th:unless="${games} and ${games.size()}">No games!</p>
+<table class="table table-striped">
+ <thead>
+ <tr>
+  <th>Name</th>
+  <th>Description</th>
+  <th>Players</th>
+  <th>Storage Location</th>
+  <th>Available?</th>
+ </tr>
+ </thead>
+ <tr th:each="game : ${games}">
+  <td><a th:href="'/games/detail?gameId=' + ${game.id}" th:text="${game.name}"></a></td>
+  <td th:text="${game.gameDetails.description}"></td>
+  <td th:text="${game.gameDetails.minPlayers + '–' + game.gameDetails.maxPlayers}"></td>
+  <td th:text="${game.storageLocation.name}"></td>
+  <td>Yes</td>
+  <td><a th:href="@{/game/edit/{id}(id=${game.id})}">Edit</a></td>
+ </tr>
+</table>
+
 </body>
 </html>

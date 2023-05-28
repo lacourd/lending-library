@@ -1,4 +1,4 @@
-package org.lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
