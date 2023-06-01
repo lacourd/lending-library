@@ -25,6 +25,9 @@ public class Game extends AbstractEntity{
     @OneToMany
     private GameExpansion gameExpansion;
 
+    @OneToOne(mappedBy = "gameCheckedOut")
+    private Loan loan;
+
     public Game(String name, StorageLocation storageLocation) {
         this.name = name;
         this.storageLocation = storageLocation;
