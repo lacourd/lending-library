@@ -13,6 +13,9 @@ public class StorageLocation extends AbstractEntity{
     @OneToMany(mappedBy = "storageLocation")
     private final List<Game> games = new ArrayList<>();
 
+    @OneToMany(mappedBy = "storageLocation")
+    private final List<GameExpansion> expansions = new ArrayList<>();
+
     public StorageLocation(@Size(min=3, message="Name must be at least 3 characters long") String name) {
         this.name=name;
     }

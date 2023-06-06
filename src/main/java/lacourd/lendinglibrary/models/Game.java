@@ -5,6 +5,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Game extends AbstractEntity{
@@ -22,10 +24,10 @@ public class Game extends AbstractEntity{
     @NotNull(message = "Storage location is required")
     private StorageLocation storageLocation;
 
-    @OneToMany
-    private GameExpansion gameExpansion;
+    @OneToMany(mappedBy = "baseGame")
+    private final List<GameExpansion> gameExpansion = new ArrayList<>();
 
-    @OneToOne(mappedBy = "gameCheckedOut")
+    @OneToOne(mappedBy = "expansionCheckedOut")
     private Loan loan;
 
     public Game(String name, StorageLocation storageLocation) {
@@ -59,13 +61,13 @@ public class Game extends AbstractEntity{
         this.storageLocation = storageLocation;
     }
 
-    public GameExpansion getGameExpansion() {
+    public List<GameExpansion> getGameExpansion() {
         return gameExpansion;
     }
 
-    public void setGameExpansion(GameExpansion gameExpansion) {
-        this.gameExpansion = gameExpansion;
-    }
+//    public void setGameExpansion(List<GameExpansion> gameExpansion) {
+//        this.gameExpansion = gameExpansion;
+//    }
 
     @Override
     public String toString() {
