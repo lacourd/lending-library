@@ -21,7 +21,8 @@
   <td th:text="${game.gameDetails.description}"></td>
   <td th:text="${game.gameDetails.minPlayers + '–' + game.gameDetails.maxPlayers}"></td>
   <td th:text="${game.storageLocation.name}"></td>
-  <td>Yes</td>
+  <td th:if =${game.gameDetails.isAvailable} th:text="Yes"></td>
+  <td th:unless =${game.gameDetails.isAvailable} th:text="No"></td>
   <td><a th:href="@{/game/edit/{id}(id=${game.id})}">Edit</a></td>
  </tr>
 </table>

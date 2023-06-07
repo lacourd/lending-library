@@ -21,6 +21,8 @@ public class GameDetails extends AbstractEntity{
     @Max(12)
     private int maxPlayers;
 
+    private boolean isAvailable = true;
+
     @OneToOne(mappedBy = "gameDetails")
     private Game game;
 
@@ -54,5 +56,13 @@ public class GameDetails extends AbstractEntity{
 
     public void setMaxPlayers(int maxPlayers) {
         this.maxPlayers = maxPlayers;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 }

@@ -1,7 +1,9 @@
 package lacourd.lendinglibrary.models;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Patron extends AbstractEntity{
@@ -10,8 +12,8 @@ public class Patron extends AbstractEntity{
 
     private String lastName;
 
-    @OneToOne(mappedBy = "patron")
-    private Loan loan;
+    @OneToMany(mappedBy = "patron")
+    private List<Loan> loan = new ArrayList<>();
 
     public Patron() {}
 
@@ -31,11 +33,11 @@ public class Patron extends AbstractEntity{
         this.lastName = lastName;
     }
 
-    public Loan getLoan() {
+    public List<Loan> getLoan() {
         return loan;
     }
 
-    public void setLoan(Loan loan) {
+    public void setLoan(List<Loan> loan) {
         this.loan = loan;
     }
 }

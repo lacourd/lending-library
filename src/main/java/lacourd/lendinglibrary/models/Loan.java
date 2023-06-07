@@ -1,8 +1,6 @@
 package lacourd.lendinglibrary.models;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -18,7 +16,7 @@ public class Loan extends AbstractEntity{
     @OneToOne
     private GameExpansion expansionCheckedOut;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Patron patron;
 
     public Loan() {}

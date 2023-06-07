@@ -32,7 +32,7 @@ public class GameController {
     public String displayAllGames(@RequestParam(required = false) Integer locationId, Model model) {
         if (locationId == null) {
             model.addAttribute("title", "All Games");
-            model.addAttribute("games", gameRepository.findAll());
+            model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
         } else {
             Optional<StorageLocation> result = storageLocationRepository.findById(locationId);
             if (result.isEmpty()) {
@@ -68,7 +68,7 @@ public class GameController {
     @GetMapping("delete")
     public String displayDeleteGameForm(Model model) {
         model.addAttribute("title", "Delete Games");
-        model.addAttribute("games", gameRepository.findAll());
+        model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
         return "games/delete";
     }
 

@@ -12,7 +12,8 @@
         <select name="gameId">
             <option th:each="game : ${games}"
                     th:text="${game.name}"
-                    th:value="${game.id}"></option>
+                    th:value="${game.id}"
+                    th:unless="${!game.gameDetails.isAvailable}"></option>
         </select>
     </div>
     <div class="form-group">
