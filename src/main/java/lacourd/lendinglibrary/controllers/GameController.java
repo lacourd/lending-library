@@ -55,7 +55,7 @@ public class GameController {
     }
 
     @PostMapping("add")
-    public String processCreateEventForm(@ModelAttribute @Valid Game newGame, Errors errors, Model model) {
+    public String processAddGameForm(@ModelAttribute @Valid Game newGame, Errors errors, Model model) {
         if(errors.hasErrors()) {
             model.addAttribute("title", "Add Game");
             return "games/add";

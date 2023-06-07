@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head">
+    <meta charset="UTF-8"/>
+    <title></title>
+</head>
+<body class="container">
+<header th:replace="fragments :: header"></header>
+<form method="post" action="/checkouts/new">
+    <div class="form-group">
+        <label th:for="game">Game Name</label>
+        <select name="gameId">
+            <option th:each="game : ${games}"
+                    th:text="${game.name}"
+                    th:value="${game.id}"></option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label th:for="patron">Patron</label>
+        <select name="patronId">
+            <option th:each="patron : ${patrons}"
+                    th:text="${patron.firstName + ' ' + patron.lastName}"
+                    th:value="${patron.id}"></option>
+        </select>
+        <a th:href="@{'/patrons/add'}">Add Patron</a>
+    </div>
+    <div class="form-group">
+        <label>Checkout Date
+            <input th:field="${loan.checkOutDate}" type="date" class="form-control">
+        </label>
+        <p class="error" th:errors="${loan.checkOutDate}"></p>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Checkout Game" class="btn btn-success">
+    </div>
+</form>
+
+</body>
+</html>
