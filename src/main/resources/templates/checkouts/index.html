@@ -16,12 +16,12 @@
     </tr>
     </thead>
     <tr th:each="loan : ${loans}">
-        <td><a th:href="'/games/detail?gameId=' + ${loan.id}" th:text="${loan.id}"></a></td>
+<!--        <td><a th:href="'/games/detail?gameId=' + ${loan.id}" th:text="${loan.id}"></a></td>-->
+        <td th:text="${loan.gameCheckedOut.name}"></td>
         <td th:text="${loan.patron.firstName + ' ' + loan.patron.lastName}"></td>
         <td th:text="${loan.checkOutDate}"></td>
         <td th:text="${loan.checkInDate}"></td>
-        <td>Yes</td>
-        <td><a th:href="@{/game/edit/{id}(id=${game.id})}">Edit</a></td>
+<!--        <td><a th:href="@{/game/edit/{id}(id=${game.id})}">Edit</a></td>-->
     </tr>
 </table>
 

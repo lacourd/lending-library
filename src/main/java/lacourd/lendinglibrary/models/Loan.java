@@ -1,5 +1,6 @@
 package lacourd.lendinglibrary.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 @Entity
 public class Loan extends AbstractEntity{
 
-    private LocalDate checkOutDate;
+    private String checkOutDate;
 
     private LocalDate checkInDate;
 
@@ -17,16 +18,16 @@ public class Loan extends AbstractEntity{
     @OneToOne
     private GameExpansion expansionCheckedOut;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Patron patron;
 
     public Loan() {}
 
-    public LocalDate getCheckOutDate() {
+    public String getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(LocalDate checkOutDate) {
+    public void setCheckOutDate(String checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 
@@ -52,5 +53,13 @@ public class Loan extends AbstractEntity{
 
     public void setExpansionCheckedOut(GameExpansion expansionCheckedOut) {
         this.expansionCheckedOut = expansionCheckedOut;
+    }
+
+    public Patron getPatron() {
+        return patron;
+    }
+
+    public void setPatron(Patron patron) {
+        this.patron = patron;
     }
 }

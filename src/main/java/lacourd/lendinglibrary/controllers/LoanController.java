@@ -31,7 +31,7 @@ public class LoanController {
 
     @GetMapping
     public String displayAllLoans(Model model) {
-        model.addAttribute("title", "All Loans");
+        model.addAttribute("title", "All Checkouts");
         model.addAttribute("loans", loanRepository.findAll());
         return "checkouts/index";
     }
@@ -62,6 +62,7 @@ public class LoanController {
         Optional<Patron> result2 = patronRepository.findById(patronId);
         if (result2.isPresent()) {
             Patron patron = result2.get();
+            newLoan.setPatron(patron);
         }
         loanRepository.save(newLoan);
         return "redirect:";

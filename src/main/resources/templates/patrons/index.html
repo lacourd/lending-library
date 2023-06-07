@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
-<head>
-    <meta charset="UTF-8"/>
-    <title></title>
-</head>
-<body>
+<head th:replace="fragments :: head"></head>
+<body class="container">
+
+<nav th:replace="fragments :: header"></nav>
+
+<p th:unless="${patrons} and ${patrons.size()}">No patrons!</p>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Patron</th>
+    </tr>
+    </thead>
+    <tr th:each="patron : ${patrons}">
+<!--        <td><a th:href="'/games/detail?gameId=' + ${loan.id}" th:text="${loan.id}"></a></td>-->
+        <td th:text="${patron.lastName + ', ' + patron.firstName}"></td>
+<!--        <td><a th:href="@{/game/edit/{id}(id=${game.id})}">Edit</a></td>-->
+    </tr>
+</table>
+<a th:href="@{'/patrons/add'}">Add Patron</a>
 
 </body>
 </html>
