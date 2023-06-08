@@ -7,7 +7,7 @@
 <body class="container">
 <header th:replace="fragments :: header"></header>
 <form method="post" action="/checkouts/new">
-    <div class="form-group">
+    <div th:unless="${game}" class="form-group">
         <label th:for="game">Game Name</label>
         <select name="gameId">
             <option th:each="game : ${games}"
@@ -15,6 +15,10 @@
                     th:value="${game.id}"
                     th:unless="${!game.gameDetails.isAvailable}"></option>
         </select>
+    </div>
+    <div th:if="${game}" class="form-group">
+        <label th:for="${game}">Game Name</label>
+        <select name="gameId"><option th:text="${game.name}" th:value="${game.id}"></option></select>
     </div>
     <div class="form-group">
         <label th:for="patron">Patron</label>

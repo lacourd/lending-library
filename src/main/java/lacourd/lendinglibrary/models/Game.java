@@ -27,7 +27,7 @@ public class Game extends AbstractEntity{
     @OneToMany(mappedBy = "baseGame")
     private final List<GameExpansion> gameExpansion = new ArrayList<>();
 
-    @OneToOne //(mappedBy = "gameCheckedOut")
+    @OneToOne (mappedBy = "gameCheckedOut")
 //    @JoinColumn(name="loan_id")
     private Loan loan;
 

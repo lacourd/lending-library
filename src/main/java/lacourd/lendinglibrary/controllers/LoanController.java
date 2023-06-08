@@ -43,6 +43,17 @@ public class LoanController {
         return "checkouts/new";
     }
 
+    @GetMapping("new/{gameId}")
+    public String renderCheckoutForm(Model model, @PathVariable int gameId) {
+        Optional<Game> result = gameRepository.findById(gameId);
+        Game game = result.get();
+        model.addAttribute("title", "Checkout " + game.getName());
+        model.addAttribute(new Loan());
+        model.addAttribute("game", game);
+        model.addAttribute("patrons", patronRepository.findAll());
+        return "checkouts/new";
+    }
+
     @PostMapping("new")
     public String processCheckoutForm(@ModelAttribute @Valid Loan newLoan, Errors errors, Model model,
                                         @RequestParam int gameId, @RequestParam int patronId) {
@@ -76,6 +87,7 @@ public class LoanController {
         loanRepository.save(newLoan);
         return "redirect:";
     }
+
 
     @GetMapping("return/{loanId}")
     public String displayReturnForm(Model model, @PathVariable int loanId) {
