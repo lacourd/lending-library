@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -76,7 +77,8 @@ public class LoanController {
 //                return "checkouts/new";
 //            }
             info.setAvailable(false);
-            checkedOutGame.setLoan(newLoan);
+//           is this necessary now that I reimplemented mappedBy?
+//            checkedOutGame.setLoan(newLoan);
             newLoan.setGameCheckedOut(checkedOutGame);
         }
         Optional<Patron> result2 = patronRepository.findById(patronId);
@@ -103,5 +105,51 @@ public class LoanController {
             model.addAttribute("title", "Return Item");
         }
         return "checkouts/return";
+    }
+
+    @GetMapping("return")
+    public String displayReturnForm(Model model) {
+
+            model.addAttribute("loans", loanRepository.findAll());
+            model.addAttribute("title", "Return Item");
+
+        return "checkouts/return";
+    }
+
+    @PostMapping("return")
+    public String processReturnForm(@ModelAttribute @Valid Loan loan, Errors errors, Model model) {
+        if(errors.hasErrors()) {
+            model.addAttribute("title", "Return Item");
+            model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
+            model.addAttribute("patrons", patronRepository.findAll());
+            return "checkouts/return";
+        }
+        Game returnedGame = loan.getGameCheckedOut();
+        returnedGame.getGameDetails().setAvailable(true);
+
+//        Optional<Game> result1 = gameRepository.findById(gameId);
+//        if (result1.isPresent()) {
+//            Game checkedOutGame = result1.get();
+//            GameDetails info = checkedOutGame.getGameDetails();
+////          I was able to eliminate checked out items from the dropdown menu so I don't think I need this code
+////            if (info.isAvailable()==false) {
+////                errors.reject("game.unavailable", "Game is already checked out!");
+////                model.addAttribute("title", "New Checkout");
+////                model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
+////                model.addAttribute("patrons", patronRepository.findAll());
+////                return "checkouts/new";
+////            }
+//            info.setAvailable(false);
+////           is this necessary now that I reimplemented mappedBy?
+////            checkedOutGame.setLoan(newLoan);
+//            newLoan.setGameCheckedOut(checkedOutGame);
+//        }
+//        Optional<Patron> result2 = patronRepository.findById(patronId);
+//        if (result2.isPresent()) {
+//            Patron patron = result2.get();
+//            newLoan.setPatron(patron);
+//        }
+//        loanRepository.save(newLoan);
+        return "redirect:";
     }
 }
