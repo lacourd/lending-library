@@ -2,6 +2,7 @@ package lacourd.lendinglibrary.controllers;
 
 import lacourd.lendinglibrary.data.GameDetailsRepository;
 import lacourd.lendinglibrary.data.GameRepository;
+import lacourd.lendinglibrary.data.LoanRepository;
 import lacourd.lendinglibrary.data.StorageLocationRepository;
 import lacourd.lendinglibrary.models.Game;
 import lacourd.lendinglibrary.models.StorageLocation;
@@ -28,11 +29,15 @@ public class GameController {
     @Autowired
     private StorageLocationRepository storageLocationRepository;
 
+    @Autowired
+    private LoanRepository loanRepository;
+
     @GetMapping
     public String displayAllGames(@RequestParam(required = false) Integer locationId, Model model) {
         if (locationId == null) {
             model.addAttribute("title", "All Games");
             model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
+            model.addAttribute("loans", loanRepository.findAll());
         } else {
             Optional<StorageLocation> result = storageLocationRepository.findById(locationId);
             if (result.isEmpty()) {

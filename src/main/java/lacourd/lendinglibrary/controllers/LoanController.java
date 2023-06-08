@@ -65,6 +65,7 @@ public class LoanController {
 //                return "checkouts/new";
 //            }
             info.setAvailable(false);
+            checkedOutGame.setLoan(newLoan);
             newLoan.setGameCheckedOut(checkedOutGame);
         }
         Optional<Patron> result2 = patronRepository.findById(patronId);
@@ -74,5 +75,21 @@ public class LoanController {
         }
         loanRepository.save(newLoan);
         return "redirect:";
+    }
+
+    @GetMapping("return/{loanId}")
+    public String displayReturnForm(Model model, @PathVariable int loanId) {
+
+        Optional<Loan> result = loanRepository.findById(loanId);
+        if (!result.isEmpty()){
+            Loan loan = result.get();
+            model.addAttribute("loan", loan);
+            model.addAttribute("title", "Return Item: " + loan.getGameCheckedOut().getName());
+//            model.addAttribute("static", "static");
+        }   else {
+            model.addAttribute("loans", loanRepository.findAll());
+            model.addAttribute("title", "Return Item");
+        }
+        return "checkouts/return";
     }
 }

@@ -8,9 +8,9 @@ public class Loan extends AbstractEntity{
 
     private String checkOutDate;
 
-    private LocalDate checkInDate;
+    private String checkInDate;
 
-    @OneToOne
+    @OneToOne //(mappedBy = "loan")
     private Game gameCheckedOut;
 
     @OneToOne
@@ -29,11 +29,11 @@ public class Loan extends AbstractEntity{
         this.checkOutDate = checkOutDate;
     }
 
-    public LocalDate getCheckInDate() {
+    public String getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(LocalDate checkInDate) {
+    public void setCheckInDate(String checkInDate) {
         this.checkInDate = checkInDate;
     }
 

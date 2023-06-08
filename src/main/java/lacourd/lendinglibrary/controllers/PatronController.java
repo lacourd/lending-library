@@ -8,6 +8,7 @@ import lacourd.lendinglibrary.models.Loan;
 import lacourd.lendinglibrary.models.Patron;
 import lacourd.lendinglibrary.models.StorageLocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -32,7 +33,7 @@ public class PatronController {
     @GetMapping
     public String displayAllPatrons(Model model) {
         model.addAttribute("title", "All Patrons");
-        model.addAttribute("patrons", patronRepository.findAll());
+        model.addAttribute("patrons", patronRepository.findAll(Sort.by("lastName")));
         return "patrons/index";
     }
 

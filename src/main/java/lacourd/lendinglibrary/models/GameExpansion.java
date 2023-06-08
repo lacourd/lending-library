@@ -21,7 +21,7 @@ public class GameExpansion extends AbstractEntity{
     @NotNull(message = "Storage location is required")
     private StorageLocation storageLocation;
 
-    @OneToOne(mappedBy = "gameCheckedOut")
+    @OneToOne //(mappedBy = "gameCheckedOut")
     private Loan loan;
 
     public GameExpansion(String name, Game baseGame, StorageLocation storageLocation) {
