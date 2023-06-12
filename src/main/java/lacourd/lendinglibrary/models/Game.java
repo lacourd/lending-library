@@ -27,9 +27,9 @@ public class Game extends AbstractEntity{
     @OneToMany(mappedBy = "baseGame")
     private final List<GameExpansion> gameExpansion = new ArrayList<>();
 
-    @OneToOne (mappedBy = "gameCheckedOut")
+    @OneToMany (mappedBy = "gameCheckedOut")
 //    @JoinColumn(name="loan_id")
-    private Loan loan;
+    private List<Loan> loan = new ArrayList<>();
 
     public Game(String name, StorageLocation storageLocation) {
         this.name = name;
@@ -71,11 +71,11 @@ public class Game extends AbstractEntity{
 //    }
 
 
-    public Loan getLoan() {
+    public List<Loan> getLoan() {
         return loan;
     }
 
-    public void setLoan(Loan loan) {
+    public void setLoan(List<Loan> loan) {
         this.loan = loan;
     }
 

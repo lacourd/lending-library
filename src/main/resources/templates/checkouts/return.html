@@ -7,40 +7,45 @@
 <body class="container">
 <header th:replace="fragments :: header"></header>
 <div th:if="${loan}">
-    <label th:for="game">Game: </label>
-    <p name="gameId" th:text="${loan.gameCheckedOut.name}" th:value="${loan.gameCheckedOut.id}">
-    </p>
+    <h1 th:text="${loan.gameCheckedOut.name}"></h1>
+    <form method="post" action="/checkouts/return">
+        <div class="form-group">
+            <label>Id:
+                <input type="hidden" th:value="${loan.id}" name="loanId" class="form-control">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Return Date
+                <input th:field="${loan.checkInDate}" type="date" class="form-control">
+            </label>
+            <p class="error" th:errors="${loan.checkInDate}"></p>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Return Game" class="btn btn-primary">
+        </div>
+    </form>
 </div>
-<div th:if="${loan}">
-    <label th:for="patron">Patron: </label>
-    <p name="patronId" th:text="${loan.patron.firstName + ' ' + loan.patron.lastName}" th:value="${loan.patron.id}">
-    </p>
+<div th:unless="${loan}">
+    <h1>NO GAME SELECTED</h1>
+    <form method="post" action="/checkouts/return">
+        <div>
+            <label th:for="game">Game Name</label>
+            <select name="loanId">
+                <option th:each="loan : ${loans}"
+                        th:text="${loan.gameCheckedOut.name}"
+                        th:value="${loan.id}"
+                        th:unless="${loan.checkInDate != null}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Return Date
+                <input th:name="checkInDate" type="date" th:value="${checkInDate}" class="form-control" />
+            </label>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Return Game" class="btn btn-primary">
+        </div>
+    </form>
 </div>
-<div th:if="${loan}">
-    <label th:for="dateCheckedOut">Date Checked Out: </label>
-    <p name="checkOutDate" th:text="${loan.checkOutDate}" th:value="${loan.checkOutDate}">
-    </p>
-</div>
-<form method="post" action="/checkouts/return">
-    <div th:unless="${loan}">
-        <label th:for="game">Game Name</label>
-        <select name="gameId">
-            <option th:each="game : ${games}"
-                    th:text="${game.name}"
-                    th:value="${game.id}"
-                    th:unless="${game.gameDetails.isAvailable}"></option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Return Date
-            <input th:field="${loan.checkInDate}" type="date" class="form-control">
-        </label>
-        <p class="error" th:errors="${loan.checkInDate}"></p>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Return Game" class="btn btn-primary">
-    </div>
-</form>
-
 </body>
 </html>

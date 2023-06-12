@@ -21,10 +21,10 @@
   <td th:text="${game.gameDetails.description}"></td>
   <td th:text="${game.gameDetails.minPlayers + '–' + game.gameDetails.maxPlayers}"></td>
   <td th:text="${game.storageLocation.name}"></td>
-  <td th:if =${game.gameDetails.isAvailable} th:text="Yes"></td>
-  <td th:unless =${game.gameDetails.isAvailable} th:text="No"></td>
-  <td th:unless =${game.gameDetails.isAvailable}><a th:href="@{/checkouts/return/{id}(id=${game.loan.id})}">Return</a></td>
-  <td th:if =${game.gameDetails.isAvailable}><a th:href="@{/checkouts/new/{id}(id=${game.id})}">Checkout</a></td>
+  <td th:if ="${game.gameDetails.currentLoan == 0}" th:text="Yes"></td>
+  <td th:unless ="${game.gameDetails.currentLoan == 0}" th:text="No"></td>
+  <td th:unless ="${game.gameDetails.currentLoan == 0}"><a th:href="@{/checkouts/return/{id}(id=${game.gameDetails.currentLoan})}">Return</a></td>
+  <td th:if ="${game.gameDetails.isAvailable}"><a th:href="@{/checkouts/new/{id}(id=${game.id})}">Checkout</a></td>
  </tr>
 </table>
 

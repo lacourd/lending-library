@@ -10,7 +10,7 @@ public class Loan extends AbstractEntity{
 
     private String checkInDate;
 
-    @OneToOne //(mappedBy = "loan")
+    @ManyToOne //(mappedBy = "loan")
     private Game gameCheckedOut;
 
     @OneToOne

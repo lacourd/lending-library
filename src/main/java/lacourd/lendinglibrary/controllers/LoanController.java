@@ -30,9 +30,16 @@ public class LoanController {
 
     @GetMapping
     public String displayAllLoans(Model model) {
-        model.addAttribute("title", "All Checkouts");
+        model.addAttribute("title", "Active Checkouts");
         model.addAttribute("loans", loanRepository.findAll());
         return "checkouts/index";
+    }
+
+    @GetMapping("archive")
+    public String displayArchive(Model model) {
+        model.addAttribute("title", "Past Checkouts");
+        model.addAttribute("loans", loanRepository.findAll());
+        return "checkouts/archive";
     }
 
     @GetMapping("new")
@@ -77,9 +84,12 @@ public class LoanController {
 //                return "checkouts/new";
 //            }
             info.setAvailable(false);
+            info.setCurrentLoan(newLoan.getId());
+
 //           is this necessary now that I reimplemented mappedBy?
 //            checkedOutGame.setLoan(newLoan);
             newLoan.setGameCheckedOut(checkedOutGame);
+            gameRepository.save(checkedOutGame);
         }
         Optional<Patron> result2 = patronRepository.findById(patronId);
         if (result2.isPresent()) {
@@ -87,6 +97,8 @@ public class LoanController {
             newLoan.setPatron(patron);
         }
         loanRepository.save(newLoan);
+        newLoan.getGameCheckedOut().getGameDetails().setCurrentLoan(newLoan.getId());
+        gameRepository.save(newLoan.getGameCheckedOut());
         return "redirect:";
     }
 
@@ -99,7 +111,6 @@ public class LoanController {
             Loan loan = result.get();
             model.addAttribute("loan", loan);
             model.addAttribute("title", "Return Item: " + loan.getGameCheckedOut().getName());
-//            model.addAttribute("static", "static");
         }   else {
             model.addAttribute("loans", loanRepository.findAll());
             model.addAttribute("title", "Return Item");
@@ -117,39 +128,18 @@ public class LoanController {
     }
 
     @PostMapping("return")
-    public String processReturnForm(@ModelAttribute @Valid Loan loan, Errors errors, Model model) {
-        if(errors.hasErrors()) {
-            model.addAttribute("title", "Return Item");
-            model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
-            model.addAttribute("patrons", patronRepository.findAll());
-            return "checkouts/return";
+    public String processReturnForm(@RequestParam int loanId, @RequestParam String checkInDate) {
+        Optional<Loan> result = loanRepository.findById(loanId);
+        if (result.isPresent()) {
+            Loan loanToReturn = result.get();
+            loanToReturn.setCheckInDate(checkInDate);
+            Game returnedGame = loanToReturn.getGameCheckedOut();
+            returnedGame.getGameDetails().setCurrentLoan(0);
+            returnedGame.getGameDetails().setAvailable(true);
+            loanRepository.save(loanToReturn);
+            gameRepository.save(returnedGame);
         }
-        Game returnedGame = loan.getGameCheckedOut();
-        returnedGame.getGameDetails().setAvailable(true);
 
-//        Optional<Game> result1 = gameRepository.findById(gameId);
-//        if (result1.isPresent()) {
-//            Game checkedOutGame = result1.get();
-//            GameDetails info = checkedOutGame.getGameDetails();
-////          I was able to eliminate checked out items from the dropdown menu so I don't think I need this code
-////            if (info.isAvailable()==false) {
-////                errors.reject("game.unavailable", "Game is already checked out!");
-////                model.addAttribute("title", "New Checkout");
-////                model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
-////                model.addAttribute("patrons", patronRepository.findAll());
-////                return "checkouts/new";
-////            }
-//            info.setAvailable(false);
-////           is this necessary now that I reimplemented mappedBy?
-////            checkedOutGame.setLoan(newLoan);
-//            newLoan.setGameCheckedOut(checkedOutGame);
-//        }
-//        Optional<Patron> result2 = patronRepository.findById(patronId);
-//        if (result2.isPresent()) {
-//            Patron patron = result2.get();
-//            newLoan.setPatron(patron);
-//        }
-//        loanRepository.save(newLoan);
         return "redirect:";
     }
 }
