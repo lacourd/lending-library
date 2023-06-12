@@ -23,7 +23,7 @@ public class GameDetails extends AbstractEntity{
 
     private boolean isAvailable = true;
 
-    private Integer currentLoan;
+    private Integer currentLoan = 0;
 
     @OneToOne(mappedBy = "gameDetails")
     private Game game;
