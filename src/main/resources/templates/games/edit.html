@@ -13,7 +13,17 @@
     </div>
     <div class="form-group">
         <label>Description:
-            <textarea name="description" class="form-control" th:value="${game.gameDetails.description}"></textarea>
+            <textarea name="description" class="form-control" th:text="${game.gameDetails.description}"></textarea>
+        </label>
+    </div>
+    <div class="form-group">
+        <label>Minimum number of players:
+            <input name="min" type="number" class="form-control" th:value="${game.gameDetails.minPlayers}">
+        </label>
+    </div>
+    <div class="form-group">
+        <label>Maximum number of players:
+            <input name="max" type="number" class="form-control" th:value="${game.gameDetails.maxPlayers}">
         </label>
     </div>
     <div class="form-group">

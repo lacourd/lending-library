@@ -5,6 +5,7 @@ import lacourd.lendinglibrary.data.GameRepository;
 import lacourd.lendinglibrary.data.LoanRepository;
 import lacourd.lendinglibrary.data.StorageLocationRepository;
 import lacourd.lendinglibrary.models.Game;
+import lacourd.lendinglibrary.models.GameDetails;
 import lacourd.lendinglibrary.models.StorageLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -116,12 +117,14 @@ public class GameController {
     }
 
     @PostMapping("edit")
-    public String processEditForm(int gameId, String name, String description) {
+    public String processEditForm(int gameId, String name, String description, int min, int max) {
         Optional<Game> result = gameRepository.findById(gameId);
         if (result.isPresent()) {
             Game gameToEdit = result.get();
             gameToEdit.setName(name);
             gameToEdit.getGameDetails().setDescription(description);
+            gameToEdit.getGameDetails().setMinPlayers(min);
+            gameToEdit.getGameDetails().setMaxPlayers(max);
             gameRepository.save(gameToEdit);
         }
         return "redirect:";
