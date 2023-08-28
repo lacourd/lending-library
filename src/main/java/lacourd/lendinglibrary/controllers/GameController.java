@@ -5,6 +5,7 @@ import lacourd.lendinglibrary.data.GameRepository;
 import lacourd.lendinglibrary.data.LoanRepository;
 import lacourd.lendinglibrary.data.StorageLocationRepository;
 import lacourd.lendinglibrary.models.Game;
+import lacourd.lendinglibrary.models.GameDetails;
 import lacourd.lendinglibrary.models.StorageLocation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -102,4 +104,30 @@ public class GameController {
 
         return "games/detail";
     }
+
+    @GetMapping("edit/{gameId}")
+    public String displayEditForm(Model model, @PathVariable int gameId) {
+        Optional<Game> result = gameRepository.findById(gameId);
+        if (result.isPresent()) {
+            Game game = result.get();
+            model.addAttribute("title", "Edit Game " + game.getName() + " (id=" + gameId + ")");
+            model.addAttribute("game", game);
+        }
+        return "games/edit";
+    }
+
+    @PostMapping("edit")
+    public String processEditForm(int gameId, String name, String description, int min, int max) {
+        Optional<Game> result = gameRepository.findById(gameId);
+        if (result.isPresent()) {
+            Game gameToEdit = result.get();
+            gameToEdit.setName(name);
+            gameToEdit.getGameDetails().setDescription(description);
+            gameToEdit.getGameDetails().setMinPlayers(min);
+            gameToEdit.getGameDetails().setMaxPlayers(max);
+            gameRepository.save(gameToEdit);
+        }
+        return "redirect:";
+    }
+
 }

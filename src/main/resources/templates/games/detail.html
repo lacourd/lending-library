@@ -7,10 +7,6 @@
 
 <table class="table table-striped">
     <tr>
-        <th>ID</th>
-        <td th:text="${game.id}"></td>
-    </tr>
-    <tr>
         <th>Description</th>
         <td th:text="${game.gameDetails.description}"></td>
     </tr>
@@ -25,7 +21,7 @@
         </td>
     </tr>
 </table>
-<a th:href="'/games/add-tag?gameId=' + ${game.id}">Add Tag</a>
-
+<!--<a th:href="'/games/add-tag?gameId=' + ${game.id}">Add Tag</a>-->
+<a th:href="'/games/edit/' + ${game.id}">Edit Game Details</a>
 </body>
 </html>
