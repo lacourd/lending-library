@@ -13,6 +13,8 @@ public class GameDetails extends AbstractEntity{
     @Size(max=500, message = "Description too long!")
     private String description;
 
+    private String longDescription;
+
     @NotNull
     @Min(1)
     private int minPlayers;
