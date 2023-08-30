@@ -46,6 +46,14 @@ public class GameDetails extends AbstractEntity{
         this.description = description;
     }
 
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
+    }
+
     public int getMinPlayers() {
         return minPlayers;
     }
