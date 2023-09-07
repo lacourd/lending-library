@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 
 public class TagController {
+
     @Autowired
     TagRepository tagRepository;
 
