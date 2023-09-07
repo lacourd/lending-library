@@ -31,6 +31,9 @@ public class Game extends AbstractEntity{
 //    @JoinColumn(name="loan_id")
     private List<Loan> loan = new ArrayList<>();
 
+    @ManyToMany
+    private final List<Tag> tags = new ArrayList<>();
+
     public Game(String name, StorageLocation storageLocation) {
         this.name = name;
         this.storageLocation = storageLocation;
@@ -77,6 +80,14 @@ public class Game extends AbstractEntity{
 
     public void setLoan(List<Loan> loan) {
         this.loan = loan;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
     }
 
     @Override
