@@ -1,11 +1,10 @@
 package lacourd.lendinglibrary.controllers;
 
-import lacourd.lendinglibrary.data.GameDetailsRepository;
-import lacourd.lendinglibrary.data.GameRepository;
-import lacourd.lendinglibrary.data.LoanRepository;
-import lacourd.lendinglibrary.data.StorageLocationRepository;
+import lacourd.lendinglibrary.data.*;
 import lacourd.lendinglibrary.models.Game;
 import lacourd.lendinglibrary.models.StorageLocation;
+import lacourd.lendinglibrary.models.Tag;
+import lacourd.lendinglibrary.models.dto.GameTagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -31,6 +30,9 @@ public class GameController {
 
     @Autowired
     private LoanRepository loanRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @GetMapping
     public String displayAllGames(@RequestParam(required = false) Integer locationId, Model model) {
@@ -101,5 +103,31 @@ public class GameController {
         }
 
         return "games/detail";
+    }
+
+    @GetMapping("add-tag")
+    public String displayAddTagForm(@RequestParam Integer gameId, Model model) {
+        Optional<Game> result = gameRepository.findById(gameId);
+        Game game = result.get();
+        model.addAttribute("title","Add tag to " + game.getName());
+        model.addAttribute("tags", tagRepository.findAll());
+        GameTagDTO gameTag = new GameTagDTO();
+        gameTag.setGame(game);
+        model.addAttribute("gameTag", gameTag);
+        return "games/add-tag";
+    }
+
+    @PostMapping("add-tag")
+    public String processAddTagForm(@ModelAttribute @Valid GameTagDTO gameTag, Errors errors, Model model) {
+        if (!errors.hasErrors()) {
+            Game game = gameTag.getGame();
+            Tag tag = gameTag.getTag();
+            if (!game.getTags().contains(tag)) {
+                game.addTag(tag);
+                gameRepository.save(game);
+            }
+            return "redirect:detail?gameId=" + game.getId();
+        }
+        return "redirect:add-tag";
     }
 }
