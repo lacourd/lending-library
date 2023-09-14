@@ -27,21 +27,21 @@ public class TagController {
         return "tags/index";
     }
 
-    @GetMapping("create")
+    @GetMapping("add")
     public String displayCreateTagForm(Model model) {
-        model.addAttribute("title", "Create Tag");
+        model.addAttribute("title", "Add Tag");
         model.addAttribute(new Tag());
-        return "tags/create";
+        return "tags/add";
     }
 
-    @PostMapping("create")
+    @PostMapping("add")
     public String processCreateTagForm(@ModelAttribute @Valid Tag tag,
                                        Errors errors, Model model) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("title", "Create Tag");
+            model.addAttribute("title", "Add Tag");
             model.addAttribute(tag);
-            return "tags/create";
+            return "tags/add";
         }
 
         tagRepository.save(tag);
