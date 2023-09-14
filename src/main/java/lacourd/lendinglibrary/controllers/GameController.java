@@ -35,12 +35,12 @@ public class GameController {
     private TagRepository tagRepository;
 
     @GetMapping
-    public String displayAllGames(@RequestParam(required = false) Integer locationId, Model model) {
-        if (locationId == null) {
+    public String displayAllGames(@RequestParam(required = false) Integer locationId, @RequestParam(required = false) Integer tagId, Model model) {
+        if (locationId == null && tagId == null) {
             model.addAttribute("title", "All Games");
             model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
             model.addAttribute("loans", loanRepository.findAll());
-        } else {
+        } else if (locationId != null && tagId == null) {
             Optional<StorageLocation> result = storageLocationRepository.findById(locationId);
             if (result.isEmpty()) {
                 model.addAttribute("title", "Invalid Storage Location ID: " + locationId);
@@ -49,8 +49,17 @@ public class GameController {
                 model.addAttribute("title", "Games in storage location: " + location.getName());
                 model.addAttribute("games", location.getGames());
             }
+        } else if (locationId == null && tagId != null) {
+            Optional<Tag> result = tagRepository.findById(tagId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Tag");
+            } else {
+                Tag tag = result.get();
+                model.addAttribute("title", "Games with tag: " + tag.getName());
+                model.addAttribute("games", tag.getGames());
+            }
         }
-        return "games/index";
+            return "games/index";
     }
 
     @GetMapping("add")
