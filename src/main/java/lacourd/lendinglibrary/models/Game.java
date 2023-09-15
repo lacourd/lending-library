@@ -90,6 +90,10 @@ public class Game extends AbstractEntity{
         this.tags.add(tag);
     }
 
+    public void removeTag(Tag tagToRemove) {
+        this.tags.remove(tagToRemove);
+    }
+
     @Override
     public String toString() {
         return name;
