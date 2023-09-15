@@ -139,4 +139,18 @@ public class GameController {
         }
         return "redirect:add-tag";
     }
+
+    @PostMapping("remove-tag")
+    public String removeTagFromGame(@ModelAttribute @Valid GameTagDTO gameTag, Errors errors, Model model) {
+        if (!errors.hasErrors()) {
+            Game game = gameTag.getGame();
+            Tag tag = gameTag.getTag();
+            if (game.getTags().contains(tag)) {
+                game.removeTag(tag);
+                gameRepository.save(game);
+            }
+            return "redirect:detail?gameId=" + game.getId();
+        }
+        return "redirect:";
+    }
 }
