@@ -22,7 +22,6 @@
         <th>Tags</th>
         <td>
             <div display="inline" th:each="tag : ${game.tags}">
-<!--                <a th:href="@{/remove-tag(gameId=${game.id},tagId=${tag.id})}">Remove tag</a>-->
                 <form display="inline" th:action="@{remove-tag(gameId=${game.id},tagId=${tag.id})}" method="post">
                     <span th:text="${tag.displayName} + ' ' "></span>
                     <input type="hidden" th:value="${tag.id}">
