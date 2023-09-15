@@ -141,16 +141,15 @@ public class GameController {
     }
 
     @PostMapping("remove-tag")
-    public String removeTagFromGame(@ModelAttribute @Valid GameTagDTO gameTag, Errors errors, Model model) {
-        if (!errors.hasErrors()) {
-            Game game = gameTag.getGame();
-            Tag tag = gameTag.getTag();
+    public String removeTagFromGame(@RequestParam int gameId, @RequestParam int tagId) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        Tag tag = tagRepository.findById(tagId).orElse(null);
+        if (game != null && tag!= null) {
             if (game.getTags().contains(tag)) {
                 game.removeTag(tag);
                 gameRepository.save(game);
             }
-            return "redirect:detail?gameId=" + game.getId();
         }
-        return "redirect:";
+        return "redirect:detail?gameId=" + gameId;
     }
 }

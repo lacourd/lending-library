@@ -21,14 +21,15 @@
     <tr>
         <th>Tags</th>
         <td>
-            <span th:each="tag : ${tags}" th:text="${tag.displayName} + ' ' ">
-                <form th:action="@{games/remove-tag.html" method="post">
-                    <input type="hidden" th:field="${gameTag.game}">
-                    <input type="hidden" th:field="${gameTag.tag}">
-                    <input type="button" class="btn btn-danger" value="Remove tag">
+            <div display="inline" th:each="tag : ${game.tags}">
+<!--                <a th:href="@{/remove-tag(gameId=${game.id},tagId=${tag.id})}">Remove tag</a>-->
+                <form display="inline" th:action="@{remove-tag(gameId=${game.id},tagId=${tag.id})}" method="post">
+                    <span th:text="${tag.displayName} + ' ' "></span>
+                    <input type="hidden" th:value="${tag.id}">
+                    <input type="hidden" th:value="${game.id}">
+                    <input type="submit" class="btn btn-danger" value="Remove tag"/>
                 </form>
-
-            </span>
+            </div>
         </td>
     </tr>
 </table>
