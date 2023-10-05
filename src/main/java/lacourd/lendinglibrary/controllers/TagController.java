@@ -21,6 +21,7 @@ public class TagController {
     public String displayTags(Model model) {
         model.addAttribute("title", "All Tags");
         model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute(new Tag());
         return "tags/index";
     }
 
@@ -52,6 +53,6 @@ public class TagController {
         if (tagToDelete != null) {
             tagRepository.deleteById(tagId);
         }
-        return "tags/index";
+        return "redirect:";
     }
 }
