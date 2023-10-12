@@ -55,4 +55,18 @@ public class TagController {
         }
         return "redirect:";
     }
+
+    @PostMapping("edit")
+    public String processEditTag(@RequestParam int tagId, String tagName) {
+        Tag tagToEdit = tagRepository.findById(tagId).orElse(null);
+        if (tagName.contains("#")) {
+            tagName = tagName.substring(1);
+        }
+
+        if (tagToEdit != null) {
+            tagToEdit.setName(tagName);
+            tagRepository.save(tagToEdit);
+        }
+        return "redirect:";
+    }
 }
