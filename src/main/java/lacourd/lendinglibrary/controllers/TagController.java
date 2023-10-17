@@ -59,12 +59,15 @@ public class TagController {
     @PostMapping("edit")
     public String processEditTag(@RequestParam int tagId, String tagName) {
         Tag tagToEdit = tagRepository.findById(tagId).orElse(null);
+        String tagNameToSet;
         if (tagName.contains("#")) {
-            tagName = tagName.substring(1);
+            tagNameToSet = tagName.substring(1);
+        } else {
+            tagNameToSet = tagName;
         }
 
         if (tagToEdit != null) {
-            tagToEdit.setName(tagName);
+            tagToEdit.setName(tagNameToSet);
             tagRepository.save(tagToEdit);
         }
         return "redirect:";
