@@ -12,10 +12,79 @@
     </tr>
     </thead>
     <tr th:each="tag : ${tags}">
-        <td><a th:text="${tag.displayName}" th:href="'/games?tagId=' + ${tag.id}"></a></td>
+        <td class="editable-tag">
+            <form method="post" th:action="@{/tags/edit(tagId=${tag.id})}">
+                <input type="hidden" name="name" th:value="${name}">
+                    <a id="${tag.name}" th:text="${tag.displayName}" th:href="'/games?tagId=' + ${tag.id}"></a>
+                </input>
+                    <button type="button" class="btn btn-primary rename-button">Rename tag</button>
+            </form>
+        </td>
+        <!--        <td><a th:contenteditable="true" id="${tag.name}" th:text="${tag.displayName}" th:href="'/games?tagId=' + ${tag.id}"></a></td>-->
+        <td>
+            <form method="post" th:action="@{/tags/delete(tagId=${tag.id})}">
+                <input type="hidden" th:value="${tag.id}" />
+                <input type="submit" class="btn btn-danger delete-button" value="Delete tag"/>
+            </form>
+        </td>
     </tr>
 
 </table>
 
+<h1>Add Tag</h1>
+<form method="post" th:action="@{/tags/add}">
+    <div class="form-group">
+        <label>Name
+            <input th:field="${tag.name}" class="form-control">
+        </label>
+        <span th:errors="${tag.name}" class="error"></span>
+    </div>
+    <input type="submit" value="Add Tag" class="btn btn-primary">
+</form>
+
 </body>
 </html>
+<script>
+// Get all "Rename tag" buttons.
+const renameButtons = document.querySelectorAll('.rename-button');
+
+// Add a `click` event listener to the "Rename tag" buttons so that when the user clicks on one of them, the `<a>` element is made editable.
+renameButtons.forEach(renameButton => {
+  renameButton.addEventListener('click', function(event) {
+    const anchorElement = renameButton.parentNode.querySelector('a');
+    const hiddenInputElement = renameButton.parentNode.querySelector('input[type="hidden"]');
+
+    // Make the `<a>` element editable.
+    anchorElement.setAttribute('contenteditable', 'true');
+
+
+    hiddenInputElement.type = 'text';
+    hiddenInputElement.value = anchorElement.textContent;
+    hiddenInputElement.setAttribute('th:value','name');
+    hiddenInputElement.setAttribute('th:field','name');
+
+    // Wrap the `<a>` element with the `<input>` element.
+<!--    anchorElement.parentNode.insertBefore(inputElement, anchorElement);-->
+    anchorElement.parentNode.removeChild(anchorElement);
+
+    // Focus the `<a>` element and place the cursor at the end of the text.
+    hiddenInputElement.focus();
+<!--    anchorElement.setSelectionRange(anchorElement.textContent.length, anchorElement.textContent.length);-->
+
+    // Create a new `<input>` element.
+    const inputButton = document.createElement('input');
+    inputButton.type = 'submit';
+    inputButton.value = 'Save';
+
+    // Replace the `<button>` element with the `<input>` element.
+    renameButton.parentNode.replaceChild(inputButton, renameButton);
+  });
+});
+
+// Add an `input` event listener to the `<a>` element so that when the user changes the text, the new tag name is submitted to your server.
+document.querySelectorAll('a[contenteditable="true"]').forEach(anchorElement => {
+  anchorElement.addEventListener('input', function() {
+    // TODO: Submit the new tag name to your server.
+  });
+});
+</script>

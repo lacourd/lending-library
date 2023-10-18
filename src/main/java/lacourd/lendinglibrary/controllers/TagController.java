@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,6 +21,7 @@ public class TagController {
     public String displayTags(Model model) {
         model.addAttribute("title", "All Tags");
         model.addAttribute("tags", tagRepository.findAll());
+        model.addAttribute(new Tag());
         return "tags/index";
     }
 
@@ -45,6 +43,33 @@ public class TagController {
         }
 
         tagRepository.save(tag);
+        return "redirect:";
+    }
+
+    @PostMapping("delete")
+    public String processDeleteTag(@RequestParam int tagId) {
+        Tag tagToDelete = tagRepository.findById(tagId).orElse(null);
+
+        if (tagToDelete != null) {
+            tagRepository.deleteById(tagId);
+        }
+        return "redirect:";
+    }
+
+    @PostMapping("edit")
+    public String processEditTag(@RequestParam int tagId, String name) {
+        Tag tagToEdit = tagRepository.findById(tagId).orElse(null);
+        String tagNameToSet;
+        if (name.contains("#")) {
+            tagNameToSet = name.replaceAll("#", "");
+        } else {
+            tagNameToSet = name;
+        }
+
+        if (tagToEdit != null) {
+            tagToEdit.setName(tagNameToSet);
+            tagRepository.save(tagToEdit);
+        }
         return "redirect:";
     }
 }
