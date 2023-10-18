@@ -61,7 +61,7 @@ public class TagController {
         Tag tagToEdit = tagRepository.findById(tagId).orElse(null);
         String tagNameToSet;
         if (name.contains("#")) {
-            tagNameToSet = name.substring(1);
+            tagNameToSet = name.replaceAll("#", "");
         } else {
             tagNameToSet = name;
         }
