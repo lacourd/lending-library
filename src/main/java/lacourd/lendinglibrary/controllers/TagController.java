@@ -57,13 +57,13 @@ public class TagController {
     }
 
     @PostMapping("edit")
-    public String processEditTag(@RequestParam int tagId, String tagName) {
+    public String processEditTag(@RequestParam int tagId, String name) {
         Tag tagToEdit = tagRepository.findById(tagId).orElse(null);
         String tagNameToSet;
-        if (tagName.contains("#")) {
-            tagNameToSet = tagName.substring(1);
+        if (name.contains("#")) {
+            tagNameToSet = name.substring(1);
         } else {
-            tagNameToSet = tagName;
+            tagNameToSet = name;
         }
 
         if (tagToEdit != null) {
