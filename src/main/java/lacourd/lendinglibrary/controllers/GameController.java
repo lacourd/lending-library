@@ -1,12 +1,11 @@
 package lacourd.lendinglibrary.controllers;
 
-import lacourd.lendinglibrary.data.GameDetailsRepository;
-import lacourd.lendinglibrary.data.GameRepository;
-import lacourd.lendinglibrary.data.LoanRepository;
-import lacourd.lendinglibrary.data.StorageLocationRepository;
+import lacourd.lendinglibrary.data.*;
 import lacourd.lendinglibrary.models.Game;
 import lacourd.lendinglibrary.models.GameDetails;
 import lacourd.lendinglibrary.models.StorageLocation;
+import lacourd.lendinglibrary.models.Tag;
+import lacourd.lendinglibrary.models.dto.GameTagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -34,13 +33,16 @@ public class GameController {
     @Autowired
     private LoanRepository loanRepository;
 
+    @Autowired
+    private TagRepository tagRepository;
+
     @GetMapping
-    public String displayAllGames(@RequestParam(required = false) Integer locationId, Model model) {
-        if (locationId == null) {
+    public String displayAllGames(@RequestParam(required = false) Integer locationId, @RequestParam(required = false) Integer tagId, Model model) {
+        if (locationId == null && tagId == null) {
             model.addAttribute("title", "All Games");
             model.addAttribute("games", gameRepository.findAll(Sort.by("name")));
             model.addAttribute("loans", loanRepository.findAll());
-        } else {
+        } else if (locationId != null && tagId == null) {
             Optional<StorageLocation> result = storageLocationRepository.findById(locationId);
             if (result.isEmpty()) {
                 model.addAttribute("title", "Invalid Storage Location ID: " + locationId);
@@ -49,8 +51,17 @@ public class GameController {
                 model.addAttribute("title", "Games in storage location: " + location.getName());
                 model.addAttribute("games", location.getGames());
             }
+        } else if (locationId == null && tagId != null) {
+            Optional<Tag> result = tagRepository.findById(tagId);
+            if (result.isEmpty()) {
+                model.addAttribute("title", "Invalid Tag");
+            } else {
+                Tag tag = result.get();
+                model.addAttribute("title", "Games with tag: " + tag.getName());
+                model.addAttribute("games", tag.getGames());
+            }
         }
-        return "games/index";
+            return "games/index";
     }
 
     @GetMapping("add")
@@ -103,6 +114,45 @@ public class GameController {
         }
 
         return "games/detail";
+    }
+
+    @GetMapping("add-tag")
+    public String displayAddTagForm(@RequestParam Integer gameId, Model model) {
+        Optional<Game> result = gameRepository.findById(gameId);
+        Game game = result.get();
+        model.addAttribute("title","Add tag to " + game.getName());
+        model.addAttribute("tags", tagRepository.findAll());
+        GameTagDTO gameTag = new GameTagDTO();
+        gameTag.setGame(game);
+        model.addAttribute("gameTag", gameTag);
+        return "games/add-tag";
+    }
+
+    @PostMapping("add-tag")
+    public String processAddTagForm(@ModelAttribute @Valid GameTagDTO gameTag, Errors errors, Model model) {
+        if (!errors.hasErrors()) {
+            Game game = gameTag.getGame();
+            Tag tag = gameTag.getTag();
+            if (!game.getTags().contains(tag)) {
+                game.addTag(tag);
+                gameRepository.save(game);
+            }
+            return "redirect:detail?gameId=" + game.getId();
+        }
+        return "redirect:add-tag";
+    }
+
+    @PostMapping("remove-tag")
+    public String removeTagFromGame(@RequestParam int gameId, @RequestParam int tagId) {
+        Game game = gameRepository.findById(gameId).orElse(null);
+        Tag tag = tagRepository.findById(tagId).orElse(null);
+        if (game != null && tag!= null) {
+            if (game.getTags().contains(tag)) {
+                game.removeTag(tag);
+                gameRepository.save(game);
+            }
+        }
+        return "redirect:detail?gameId=" + gameId;
     }
 
     @GetMapping("edit/{gameId}")

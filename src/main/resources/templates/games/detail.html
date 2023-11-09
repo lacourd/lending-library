@@ -17,7 +17,14 @@
     <tr>
         <th>Tags</th>
         <td>
-            <span th:each="tag : ${tags}" th:text="${tag.displayName} + ' ' "></span>
+            <div display="inline" th:each="tag : ${game.tags}">
+                <form display="inline" th:action="@{remove-tag(gameId=${game.id},tagId=${tag.id})}" method="post">
+                    <span th:text="${tag.displayName} + ' ' "></span>
+                    <input type="hidden" th:value="${tag.id}">
+                    <input type="hidden" th:value="${game.id}">
+                    <input type="submit" class="btn btn-danger" value="Remove tag"/>
+                </form>
+            </div>
         </td>
     </tr>
 </table>
