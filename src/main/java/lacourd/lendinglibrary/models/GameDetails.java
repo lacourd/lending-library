@@ -13,6 +13,8 @@ public class GameDetails extends AbstractEntity{
     @Size(max=500, message = "Description too long!")
     private String description;
 
+    private String longDescription;
+
     @NotNull
     @Min(1)
     private int minPlayers;
@@ -42,6 +44,14 @@ public class GameDetails extends AbstractEntity{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public void setLongDescription(String longDescription) {
+        this.longDescription = longDescription;
     }
 
     public int getMinPlayers() {
