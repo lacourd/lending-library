@@ -23,6 +23,8 @@ public class GameDetails extends AbstractEntity{
     @Max(12)
     private int maxPlayers;
 
+    private String coverImage;
+
     private boolean isAvailable = true;
 
     private Integer currentLoan = 0;
