@@ -1,3 +1,5 @@
+package lacourd.lendinglibrary.models;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -5,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class BGGItem {
 
     private String type;
-    private int id;
+    private String id;
     private String thumbnail;
     private String image;
     private String name;
@@ -30,11 +32,11 @@ public class BGGItem {
     }
 
     @XmlElement(name = "id")
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -138,4 +140,14 @@ public class BGGItem {
     }
 
     // Add getters and setters for other fields as needed...
+
+    @Override
+    public String toString() {
+        return "BGGItem{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", yearPublished='" + yearPublished + '\'' +
+                // Add more fields based on your BGGItem class
+                '}';
+    }
 }
