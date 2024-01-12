@@ -1,7 +1,10 @@
 package lacourd.lendinglibrary.models;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name = "item")
 public class BGGItem {
@@ -22,7 +25,7 @@ public class BGGItem {
 
     // Other fields as needed...
 
-    @XmlElement(name = "type")
+    @XmlAttribute(name = "type")
     public String getType() {
         return type;
     }
@@ -31,7 +34,7 @@ public class BGGItem {
         this.type = type;
     }
 
-    @XmlElement(name = "id")
+    @XmlAttribute(name = "id")
     public String getId() {
         return id;
     }
@@ -58,9 +61,19 @@ public class BGGItem {
         this.image = image;
     }
 
-    @XmlElement(name = "name")
+    @XmlElements({
+            @XmlElement(name = "name", type = BGGName.class)
+    })
+    private List<BGGName> names;
+
     public String getName() {
-        return name;
+        for (BGGName name : names) {
+            if (name.isPrimary()) {
+                String primaryName = name.getValue();
+                return primaryName;
+            }
+        }
+        return "No game found";
     }
 
     public void setName(String name) {
@@ -151,3 +164,4 @@ public class BGGItem {
                 '}';
     }
 }
+

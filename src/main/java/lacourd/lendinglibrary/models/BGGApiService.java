@@ -162,7 +162,7 @@ public class BGGApiService {
         if (result != null) {
             // Log details about BGGSearchResult
             logger.info("Unmarshalled BGGSearchResult:");
-            logger.info("Total Items: " + result.getItems());
+//            logger.info("Total Items: " + result.getItems());
             // Add more log statements as needed based on the structure of BGGSearchResult
             // Log details about each BGGItem
             List<BGGItem> items = result.getItems();
