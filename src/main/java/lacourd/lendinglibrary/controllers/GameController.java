@@ -183,6 +183,9 @@ public class GameController {
             gameToEdit.getGameDetails().setDescription(description);
             gameToEdit.getGameDetails().setMinPlayers(min);
             gameToEdit.getGameDetails().setMaxPlayers(max);
+            if (gameToEdit.getGameDetails().getCoverImage() == null) {
+                gameToEdit.getGameDetails().fetchCoverImage(bggApiService, gameToEdit.getSearchableName());
+            }
             gameRepository.save(gameToEdit);
         }
         return "redirect:";
