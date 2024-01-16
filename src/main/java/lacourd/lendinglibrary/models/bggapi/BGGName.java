@@ -7,11 +7,10 @@ import javax.xml.bind.annotation.XmlValue;
 @XmlRootElement(name = "name")
 public class BGGName {
 
-
     private String value;
     private String type;
 
-    @XmlValue
+    @XmlAttribute(name = "value")
     public String getValue() {
         return value;
     }
@@ -31,5 +30,10 @@ public class BGGName {
 
     public boolean isPrimary() {
         return "primary".equals(type);
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 }

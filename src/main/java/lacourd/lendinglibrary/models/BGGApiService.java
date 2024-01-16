@@ -5,6 +5,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import lacourd.lendinglibrary.models.bggapi.BGGItem;
+import lacourd.lendinglibrary.models.bggapi.BGGItems;
 import lacourd.lendinglibrary.models.bggapi.BGGName;
 import lacourd.lendinglibrary.models.bggapi.BGGSearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,13 +129,14 @@ public class BGGApiService {
     // Helper method to extract cover image URL from game details response
     private String extractCoverImageUrlFromGameDetails(String gameDetailsResponse) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(BGGItem.class, BGGName.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(BGGItems.class, BGGItem.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-            BGGItem item = (BGGItem) unmarshaller.unmarshal(new StringReader(gameDetailsResponse));
-            if (item != null) {
-                return item.getImage(); // Assuming 'getImage()' method exists in BGGItem class
-            }
+            StringReader reader = new StringReader(gameDetailsResponse);
+            BGGItems response = (BGGItems) unmarshaller.unmarshal(reader);
+            List<BGGItem> bggItems = response.getItems();
+            String thumbnail = bggItems.get(0).getThumbnail();
+            String image = bggItems.get(0).getImage();
+                return image;
         } catch (JAXBException e) {
             e.printStackTrace();
             // Log detailed JAXB errors

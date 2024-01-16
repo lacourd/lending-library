@@ -252,7 +252,7 @@ public class BGGApiServiceTest {
 //                    eq(String.class)
 //            );
             // Add your assertions here based on what you expect 'coverImageUrl' to be
-            assertEquals("https://cf.geekdo-images.com/3h9W8BfB_rltQ48EBmHliw__original/img/DDk3fDr0FkDpkYAcny5LeekB2qg=/0x0/filters:format(png)/pic3132685.png", coverImageUrl);
+            assertEquals("\nhttps://cf.geekdo-images.com/3h9W8BfB_rltQ48EBmHliw__original/img/DDk3fDr0FkDpkYAcny5LeekB2qg=/0x0/filters:format(png)/pic3132685.png\n", coverImageUrl);
         }
     }
 
