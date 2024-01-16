@@ -1,9 +1,6 @@
-package lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models.bggapi;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 import java.util.List;
 
 @XmlRootElement(name = "item")
@@ -13,7 +10,7 @@ public class BGGItem {
     private String id;
     private String thumbnail;
     private String image;
-    private String name;
+    private List<BGGName> names;;
     private String description;
     private int yearPublished;
     private int minPlayers;
@@ -61,11 +58,19 @@ public class BGGItem {
         this.image = image;
     }
 
+//    @XmlElement(name = "name")
+//    @XmlElementWrapper(name = "names")
+//    public List<BGGName> getNames() {
+//        return names;
+//    }
+//
+//    public void setNames(List<BGGName> names) {
+//        this.names = names;
+//    }
+
     @XmlElements({
             @XmlElement(name = "name", type = BGGName.class)
     })
-    private List<BGGName> names;
-
     public String getName() {
         for (BGGName name : names) {
             if (name.isPrimary()) {
@@ -75,10 +80,10 @@ public class BGGItem {
         }
         return "No game found";
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     @XmlElement(name = "description")
     public String getDescription() {
@@ -158,7 +163,7 @@ public class BGGItem {
     public String toString() {
         return "BGGItem{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                ", name='" + names + '\'' +
                 ", yearPublished='" + yearPublished + '\'' +
                 // Add more fields based on your BGGItem class
                 '}';

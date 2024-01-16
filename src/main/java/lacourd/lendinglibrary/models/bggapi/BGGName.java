@@ -1,15 +1,17 @@
-package lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models.bggapi;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 @XmlRootElement(name = "name")
 public class BGGName {
 
+
     private String value;
     private String type;
 
-    @XmlAttribute(name = "value")
+    @XmlValue
     public String getValue() {
         return value;
     }

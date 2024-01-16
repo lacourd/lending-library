@@ -1,5 +1,6 @@
-package lacourd.lendinglibrary.models;
+package lacourd.lendinglibrary.models.bggapi;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -7,9 +8,15 @@ import java.util.List;
 @XmlRootElement(name = "items")
 public class BGGSearchResult {
 
+    private String total;
     private List<BGGItem> items;
 
-    private String termsOfUse;
+    @XmlAttribute(name="total")
+    public String getTotal() {return total;}
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
 
     @XmlElement(name = "item")
     public List<BGGItem> getItems() {
@@ -20,12 +27,4 @@ public class BGGSearchResult {
         this.items = items;
     }
 
-    @XmlElement(name = "termsofuse")
-    public String getTermsOfUse() {
-        return termsOfUse;
-    }
-
-    public void setTermsOfUse(String termsOfUse) {
-        this.termsOfUse = termsOfUse;
-    }
 }

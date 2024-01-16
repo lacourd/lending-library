@@ -3,6 +3,10 @@ package lacourd.lendinglibrary.models;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import lacourd.lendinglibrary.models.bggapi.BGGItem;
+import lacourd.lendinglibrary.models.bggapi.BGGName;
+import lacourd.lendinglibrary.models.bggapi.BGGSearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -124,7 +128,7 @@ public class BGGApiService {
     // Helper method to extract cover image URL from game details response
     private String extractCoverImageUrlFromGameDetails(String gameDetailsResponse) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(BGGItem.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(BGGItem.class, BGGName.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
             BGGItem item = (BGGItem) unmarshaller.unmarshal(new StringReader(gameDetailsResponse));
