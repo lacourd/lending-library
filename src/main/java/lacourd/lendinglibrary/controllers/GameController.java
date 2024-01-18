@@ -1,10 +1,7 @@
 package lacourd.lendinglibrary.controllers;
 
 import lacourd.lendinglibrary.data.*;
-import lacourd.lendinglibrary.models.Game;
-import lacourd.lendinglibrary.models.GameDetails;
-import lacourd.lendinglibrary.models.StorageLocation;
-import lacourd.lendinglibrary.models.Tag;
+import lacourd.lendinglibrary.models.*;
 import lacourd.lendinglibrary.models.dto.GameTagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -13,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -35,6 +31,17 @@ public class GameController {
 
     @Autowired
     private TagRepository tagRepository;
+
+    private final BGGApiService bggApiService;
+
+    public GameController(GameRepository gameRepository, GameDetailsRepository gameDetailsRepository, StorageLocationRepository storageLocationRepository, LoanRepository loanRepository, TagRepository tagRepository, BGGApiService bggApiService) {
+        this.gameRepository = gameRepository;
+        this.gameDetailsRepository = gameDetailsRepository;
+        this.storageLocationRepository = storageLocationRepository;
+        this.loanRepository = loanRepository;
+        this.tagRepository = tagRepository;
+        this.bggApiService = bggApiService;
+    }
 
     @GetMapping
     public String displayAllGames(@RequestParam(required = false) Integer locationId, @RequestParam(required = false) Integer tagId, Model model) {
@@ -79,6 +86,7 @@ public class GameController {
             return "games/add";
         }
 
+        newGame.getGameDetails().fetchCoverImage(bggApiService, newGame.getSearchableName());
         gameRepository.save(newGame);
         return "redirect:";
     }
@@ -175,6 +183,9 @@ public class GameController {
             gameToEdit.getGameDetails().setDescription(description);
             gameToEdit.getGameDetails().setMinPlayers(min);
             gameToEdit.getGameDetails().setMaxPlayers(max);
+            if (gameToEdit.getGameDetails().getCoverImage() == null) {
+                gameToEdit.getGameDetails().fetchCoverImage(bggApiService, gameToEdit.getSearchableName());
+            }
             gameRepository.save(gameToEdit);
         }
         return "redirect:";

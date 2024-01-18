@@ -23,6 +23,8 @@ public class GameDetails extends AbstractEntity{
     @Max(12)
     private int maxPlayers;
 
+    private String coverImage;
+
     private boolean isAvailable = true;
 
     private Integer currentLoan = 0;
@@ -37,6 +39,10 @@ public class GameDetails extends AbstractEntity{
     }
 
     public GameDetails() {}
+
+    public void fetchCoverImage(BGGApiService bggApiService, String searchableName) {
+        this.coverImage = bggApiService.searchGameAndGetCoverImage(searchableName);
+    }
 
     public String getDescription() {
         return description;
@@ -84,5 +90,9 @@ public class GameDetails extends AbstractEntity{
 
     public void setCurrentLoan(Integer currentLoan) {
         this.currentLoan = currentLoan;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
     }
 }

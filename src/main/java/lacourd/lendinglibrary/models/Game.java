@@ -5,6 +5,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,8 @@ public class Game extends AbstractEntity{
     @NotBlank(message = "Game name is required")
     @Size(min = 3, max = 50, message = "Name must be between 3 and 70 characters.")
     private String name;
+
+    private String searchableName;
 
     @OneToOne(cascade = CascadeType.ALL)
     @Valid
@@ -36,6 +41,7 @@ public class Game extends AbstractEntity{
 
     public Game(String name, StorageLocation storageLocation) {
         this.name = name;
+        this.searchableName = preprocessNameForSearch(name);
         this.storageLocation = storageLocation;
     }
 
@@ -47,7 +53,10 @@ public class Game extends AbstractEntity{
 
     public void setName(String name) {
         this.name = name;
+        this.searchableName = preprocessNameForSearch(name);
     }
+
+    public String getSearchableName() { return searchableName; }
 
     public GameDetails getGameDetails() {
         return gameDetails;
@@ -92,6 +101,17 @@ public class Game extends AbstractEntity{
 
     public void removeTag(Tag tagToRemove) {
         this.tags.remove(tagToRemove);
+    }
+
+    private String preprocessNameForSearch(String name) {
+        try {
+            this.searchableName = URLEncoder.encode(this.name, StandardCharsets.UTF_8.toString());
+            return searchableName;
+        } catch (UnsupportedEncodingException e) {
+            // Handle encoding exception, if needed
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
