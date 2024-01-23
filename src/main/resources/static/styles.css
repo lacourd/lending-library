@@ -4,3 +4,13 @@ body {
 .error {
     color: red;
 }
+.image-container {
+      position: relative;
+      height: 500px; /* Fixed height for all images */
+   }
+
+.image-container img {
+      position: absolute;
+      max-width: 100%; /* Limits width to the container's width, preserving aspect ratio */
+      height: 100%;
+   }
