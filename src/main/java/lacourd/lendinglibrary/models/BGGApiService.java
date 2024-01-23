@@ -52,6 +52,7 @@ public class BGGApiService {
 
     public String searchGameAndGetCoverImage(String gameTitle) {
         // Step 1: Search for the game and retrieve the game ID with exact match
+        System.out.println(gameTitle);
         String searchUrlWithExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle + "&exact=1";
         ResponseEntity<String> searchResponseExact = restTemplate.getForEntity(searchUrlWithExact, String.class);
 //        System.out.println(searchResponseExact);
@@ -109,7 +110,9 @@ public class BGGApiService {
             logUnmarshalledResult(result);
 
             List<BGGItem> items = result.getItems();
-            System.out.println(items.toString());
+            if (items != null) {
+                System.out.println(items.toString());
+            }
 
             if (items != null && !items.isEmpty()) {
                 gameId = items.get(0).getId();
