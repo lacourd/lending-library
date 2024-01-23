@@ -104,14 +104,10 @@ public class Game extends AbstractEntity{
     }
 
     private String preprocessNameForSearch(String name) {
-        try {
-            this.searchableName = URLEncoder.encode(this.name, StandardCharsets.UTF_8.toString());
-            return searchableName;
-        } catch (UnsupportedEncodingException e) {
-            // Handle encoding exception, if needed
-            e.printStackTrace();
-            return null;
-        }
+        this.searchableName = name.replace(" ", "+");
+        this.searchableName = this.searchableName.replace("&", "and");
+
+        return searchableName;
     }
 
     @Override
