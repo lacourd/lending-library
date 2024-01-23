@@ -5,7 +5,9 @@
 
 <header th:replace="fragments :: header"></header>
 
-<image th:src="${game.gameDetails.coverImage}"/>
+<div class="image-container">
+    <image th:src="${game.gameDetails.coverImage}" th:alt="'Cover image for ' + ${game.name}"/>
+</div>
 <table class="table table-striped">
     <tr>
         <th>Description</th>
