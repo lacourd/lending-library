@@ -1,5 +1,7 @@
 package lacourd.lendinglibrary.models;
 
+import lacourd.lendinglibrary.models.bggapi.BGGGameData;
+
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
@@ -15,6 +17,8 @@ public class GameDetails extends AbstractEntity{
 
     private String longDescription;
 
+    private String bggId;
+
     @NotNull
     @Min(1)
     private int minPlayers;
@@ -24,6 +28,8 @@ public class GameDetails extends AbstractEntity{
     private int maxPlayers;
 
     private String coverImage;
+
+    private String thumbnailUrl;
 
     private boolean isAvailable = true;
 
@@ -42,6 +48,15 @@ public class GameDetails extends AbstractEntity{
 
     public void fetchCoverImage(BGGApiService bggApiService, String searchableName) {
         this.coverImage = bggApiService.searchGameAndGetCoverImage(searchableName);
+    }
+
+    public void fetchApiData(BGGApiService bggApiService, String searchableName) {
+        BGGGameData gameData = bggApiService.searchGameAndGetData(searchableName);
+
+        this.coverImage = gameData.getCoverImageUrl();
+        this.thumbnailUrl = gameData.getThumbnailUrl();
+        this.bggId = gameData.getGameId();
+
     }
 
     public String getDescription() {
@@ -94,5 +109,13 @@ public class GameDetails extends AbstractEntity{
 
     public String getCoverImage() {
         return coverImage;
+    }
+
+    public String getBggId() {
+        return bggId;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 }
