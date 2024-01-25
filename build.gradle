@@ -20,6 +20,7 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 	implementation 'org.apache.commons:commons-lang3'
+	implementation 'org.apache.commons:commons-text:+'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

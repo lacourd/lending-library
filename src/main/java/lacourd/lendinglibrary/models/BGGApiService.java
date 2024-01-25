@@ -213,29 +213,18 @@ public class BGGApiService {
     }
 
     private String extractGameIdFromSearchUrl(String url) {
-
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(BGGSearchResult.class, BGGItem.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-            BGGSearchResult result = (BGGSearchResult) unmarshaller.unmarshal(new StringReader(convertUrlToResponseEntity(url).getBody()));
-
-            // Log the unmarshalled result
-            logUnmarshalledResult(result);
-
-            List<BGGItem> items = result.getItems();
-            if (items != null) {
-                System.out.println(items.toString());
+        List<BGGItem> bggItems = extractBGGItemListFromApiQuery(url);
+        if (bggItems != null && bggItems.size() == 1) {
+            gameId = bggItems.get(0).getId();
+            return gameId;
+        }
+        if (bggItems != null && bggItems.size() > 1) {
+            String title = url.split("=")[2];
+            if (title.contains("&exact")) {
+                title = title.substring(0, title.length() - 6);
             }
-
-            if (items != null && !items.isEmpty()) {
-                gameId = items.get(0).getId();
-                return gameId;
-            }
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            // Log detailed JAXB errors
-            logger.log(Level.SEVERE, "JAXB Unmarshal Error", e);
+            BGGItem bestMatch = BGGItemMatcher.findBestMatch(bggItems, title);
+            return bestMatch.getId();
         }
 
         gameId = null;
@@ -243,13 +232,17 @@ public class BGGApiService {
     }
 
     private BGGItem extractItemFromGameDetailsUrl(String gameDetailsUrl) {
+        List<BGGItem> bggItems = extractBGGItemListFromApiQuery(gameDetailsUrl);
+        return bggItems.get(0);
+    }
+
+    private List<BGGItem> extractBGGItemListFromApiQuery(String url) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(BGGItems.class, BGGItem.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            StringReader reader = new StringReader(convertUrlToResponseEntity(gameDetailsUrl).getBody());
+            StringReader reader = new StringReader(convertUrlToResponseEntity(url).getBody());
             BGGItems response = (BGGItems) unmarshaller.unmarshal(reader);
-            List<BGGItem> bggItems = response.getItems();
-            return bggItems.get(0);
+            return response.getItems();
         } catch (JAXBException e) {
             e.printStackTrace();
             // Log detailed JAXB errors

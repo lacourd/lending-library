@@ -59,7 +59,7 @@ public class BGGItem {
     }
 
     @XmlElement(name = "name")
-    public List<BGGName> getItems() {
+    public List<BGGName> getNames() {
         return names;
     }
 
