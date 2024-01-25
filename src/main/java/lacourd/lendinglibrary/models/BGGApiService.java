@@ -65,6 +65,7 @@ public class BGGApiService {
 
             return new BGGGameData(gameId, coverImageUrl, thumbnailUrl, bggDescription);
         }
+        return null;
     }
 
     public String searchGameAndGetCoverImage(String gameTitle) {
