@@ -113,4 +113,32 @@ public class GameDetails extends AbstractEntity{
     public String getCoverImage() {
         return coverImage;
     }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getBggDescription() {
+        return bggDescription;
+    }
+
+    public void setBggDescription(String bggDescription) {
+        this.bggDescription = bggDescription;
+    }
+
+    public String getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(String bggId) {
+        this.bggId = bggId;
+    }
 }
