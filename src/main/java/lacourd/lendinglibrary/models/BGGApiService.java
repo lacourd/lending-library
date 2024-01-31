@@ -49,21 +49,26 @@ public class BGGApiService {
 
     public BGGGameData searchGameAndGetData(String gameTitle) {
         String searchUrlWithExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle + "&exact=1";
+        System.out.println(searchUrlWithExact);
         String gameId = extractGameIdFromSearchUrl(searchUrlWithExact);
 
         if (gameId == null) {
             String searchUrlWithoutExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle;
+            System.out.println(searchUrlWithoutExact);
             gameId = extractGameIdFromSearchUrl(searchUrlWithoutExact);
         }
 
         if (gameId != null) {
             String gameDetailsUrl = "https://www.boardgamegeek.com/xmlapi2/thing?id=" + gameId;
-            BGGItem gameInformation = extractItemFromGameDetailsUrl(gameDetailsUrl);
-            String coverImageUrl = gameInformation.getImage();
-            String thumbnailUrl = gameInformation.getThumbnail();
-            String bggDescription = gameInformation.getDescription();
+            System.out.println(gameDetailsUrl);
+            ResponseEntity<String> gameDetailsResponse = restTemplate.getForEntity(gameDetailsUrl, String.class);
 
-            return new BGGGameData(gameId, coverImageUrl, thumbnailUrl, bggDescription);
+//            BGGItem gameInformation = new BGGItem();
+            String coverImageUrl = extractCoverImageUrlFromGameDetails(gameDetailsResponse.getBody());
+//            String thumbnailUrl = gameInformation.getThumbnail();
+//            String bggDescription = gameInformation.getDescription();
+
+            return new BGGGameData(gameId, coverImageUrl, "null", "null");// thumbnailUrl, bggDescription);
         }
         return null;
     }
@@ -155,9 +160,12 @@ public class BGGApiService {
             StringReader reader = new StringReader(gameDetailsResponse);
             BGGItems response = (BGGItems) unmarshaller.unmarshal(reader);
             List<BGGItem> bggItems = response.getItems();
-            String thumbnail = bggItems.get(0).getThumbnail();
-            String image = bggItems.get(0).getImage();
-                return image;
+            if (bggItems != null && !bggItems.isEmpty()) {
+                return bggItems.get(0).getImage();
+            } else {
+                System.out.println("Something went wrong and there's no response!");
+                return null;
+            }
         } catch (JAXBException e) {
             e.printStackTrace();
             // Log detailed JAXB errors
@@ -180,7 +188,7 @@ public class BGGApiService {
 
         // Unescape other HTML entities
         processedXml = StringEscapeUtils.unescapeHtml4(processedXml);
-
+        System.out.println(processedXml);
         return processedXml;
     }
 
@@ -213,7 +221,7 @@ public class BGGApiService {
     }
 
     private String extractGameIdFromSearchUrl(String url) {
-        List<BGGItem> bggItems = extractBGGItemListFromApiQuery(url);
+        List<BGGItem> bggItems = extractBGGItemListFromSearchQuery(url);
         if (bggItems != null && bggItems.size() == 1) {
             gameId = bggItems.get(0).getId();
             return gameId;
@@ -232,17 +240,54 @@ public class BGGApiService {
     }
 
     private BGGItem extractItemFromGameDetailsUrl(String gameDetailsUrl) {
-        List<BGGItem> bggItems = extractBGGItemListFromApiQuery(gameDetailsUrl);
-        return bggItems.get(0);
+        List<BGGItem> bggItems = extractBGGItemListFromDirectQuery(gameDetailsUrl);
+        if (bggItems != null && !bggItems.isEmpty()) {
+            return bggItems.get(0);
+        }
+        // Handle the case where bggItems is null or empty
+        return null;
     }
 
-    private List<BGGItem> extractBGGItemListFromApiQuery(String url) {
+    private List<BGGItem> extractBGGItemListFromSearchQuery(String url) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(BGGSearchResult.class, BGGItem.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            System.out.println(convertUrlToResponseEntity(url));
+            StringReader reader = new StringReader(convertUrlToResponseEntity(url).getBody());
+            BGGSearchResult response = (BGGSearchResult) unmarshaller.unmarshal(reader);
+            logUnmarshalledResult(response);
+            return response.getItems();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            // Log detailed JAXB errors
+            logger.log(Level.SEVERE, "JAXB Unmarshal Error", e);
+        }
+
+        return null;
+    }
+
+    private List<BGGItem> extractBGGItemListFromDirectQuery(String url) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(BGGItems.class, BGGItem.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             StringReader reader = new StringReader(convertUrlToResponseEntity(url).getBody());
+
+            // Print XML response for debugging
+            String xmlResponse = convertUrlToResponseEntity(url).getBody();
+            logger.info("XML Response: " + xmlResponse);
+
             BGGItems response = (BGGItems) unmarshaller.unmarshal(reader);
-            return response.getItems();
+            List<BGGItem> items = response.getItems();
+            if (items != null) {
+                for (int i = 0; i < items.size(); i++) {
+                    BGGItem item = items.get(i);
+                    logger.info("Item " + (i + 1) + ": " + item.toString());
+                    // Add more log statements based on the structure of BGGItem
+                }
+            } else {
+                logger.warning("BGGItem list is null");
+            }
+            return items;
         } catch (JAXBException e) {
             e.printStackTrace();
             // Log detailed JAXB errors

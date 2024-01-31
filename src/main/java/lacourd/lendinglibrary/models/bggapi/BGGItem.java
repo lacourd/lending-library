@@ -146,7 +146,7 @@ public class BGGItem {
     public String toString() {
         return "BGGItem{" +
                 "id='" + id + '\'' +
-                "name='" + names.get(0) + '\'' +
+//                "name='" + names.get(0) + '\'' +
                 '}';
     }
 }
