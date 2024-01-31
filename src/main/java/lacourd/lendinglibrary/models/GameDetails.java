@@ -2,6 +2,7 @@ package lacourd.lendinglibrary.models;
 
 import lacourd.lendinglibrary.models.bggapi.BGGGameData;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
@@ -29,6 +30,7 @@ public class GameDetails extends AbstractEntity{
 
     private String thumbnail;
 
+    @Column(name="notes",columnDefinition="LONGTEXT")
     private String bggDescription;
 
     private String bggId;
