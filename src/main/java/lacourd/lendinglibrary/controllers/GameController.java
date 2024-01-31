@@ -86,7 +86,7 @@ public class GameController {
             return "games/add";
         }
 
-        newGame.getGameDetails().fetchCoverImage(bggApiService, newGame.getSearchableName());
+        newGame.getGameDetails().fetchGameDetails(bggApiService, newGame.getSearchableName());
         gameRepository.save(newGame);
         return "redirect:";
     }
@@ -184,7 +184,7 @@ public class GameController {
             gameToEdit.getGameDetails().setMinPlayers(min);
             gameToEdit.getGameDetails().setMaxPlayers(max);
             if (gameToEdit.getGameDetails().getCoverImage() == null) {
-                gameToEdit.getGameDetails().fetchCoverImage(bggApiService, gameToEdit.getSearchableName());
+                gameToEdit.getGameDetails().fetchGameDetails(bggApiService, gameToEdit.getSearchableName());
             }
             gameRepository.save(gameToEdit);
         }
