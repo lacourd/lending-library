@@ -4,10 +4,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import lacourd.lendinglibrary.models.bggapi.BGGItem;
-import lacourd.lendinglibrary.models.bggapi.BGGItems;
-import lacourd.lendinglibrary.models.bggapi.BGGName;
-import lacourd.lendinglibrary.models.bggapi.BGGSearchResult;
+import lacourd.lendinglibrary.models.bggapi.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -50,33 +47,23 @@ public class BGGApiService {
         this.restTemplate = restTemplate;
     }
 
-    public String searchGameAndGetCoverImage(String gameTitle) {
+    public BGGGameData searchGameAndGetBGGData(String gameTitle) {
         // Step 1: Search for the game and retrieve the game ID with exact match
         System.out.println(gameTitle);
         String searchUrlWithExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle + "&exact=1";
         ResponseEntity<String> searchResponseExact = restTemplate.getForEntity(searchUrlWithExact, String.class);
-//        System.out.println(searchResponseExact);
 
-        String xmlResponse = Objects.requireNonNull(searchResponseExact.getBody());
-//        System.out.println(xmlResponse);
-        // Preprocess the XML response
-        String processedXml = preprocessXml(xmlResponse);
-//        System.out.println(processedXml);
-        // Extract game ID after preprocessing
-        String gameId = extractGameIdFromSearchResponse(processedXml);
+        // Extract game ID
+        String gameId = extractGameIdFromSearchResponse(searchResponseExact.getBody());
 
         System.out.println(gameId);
         if (gameId == null) {
             // No exact match found, try searching without exact match
             String searchUrlWithoutExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle;
             ResponseEntity<String> searchResponseWithoutExact = restTemplate.getForEntity(searchUrlWithoutExact, String.class);
-            xmlResponse = Objects.requireNonNull(searchResponseWithoutExact.getBody());
 
-            // Preprocess the XML response
-            processedXml = preprocessXml(xmlResponse);
-
-            // Extract game ID after preprocessing
-            gameId = extractGameIdFromSearchResponse(processedXml);
+            // Extract game ID
+            gameId = extractGameIdFromSearchResponse(searchResponseWithoutExact.getBody());
         }
 
         if (gameId != null) {
@@ -84,12 +71,7 @@ public class BGGApiService {
             String gameDetailsUrl = "https://www.boardgamegeek.com/xmlapi2/thing?id=" + gameId;
             ResponseEntity<String> gameDetailsResponse = restTemplate.getForEntity(gameDetailsUrl, String.class);
 
-            xmlResponse = Objects.requireNonNull(gameDetailsResponse.getBody());
-
-            // Preprocess the XML response
-            processedXml = preprocessXml(xmlResponse);
-
-            return extractCoverImageUrlFromGameDetails(processedXml);
+            return extractGameDataFromGameDetails(gameDetailsResponse.getBody());
         }
 
         return null; // Handle if game ID not found or other error cases
@@ -129,8 +111,8 @@ public class BGGApiService {
     }
 
 
-    // Helper method to extract cover image URL from game details response
-    private String extractCoverImageUrlFromGameDetails(String gameDetailsResponse) {
+    // Helper method to extract BGGGameData from game details response
+    private BGGGameData extractGameDataFromGameDetails(String gameDetailsResponse) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(BGGItems.class, BGGItem.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -138,8 +120,10 @@ public class BGGApiService {
             BGGItems response = (BGGItems) unmarshaller.unmarshal(reader);
             List<BGGItem> bggItems = response.getItems();
             String thumbnail = bggItems.get(0).getThumbnail();
-            String image = bggItems.get(0).getImage();
-                return image;
+            String coverImage = bggItems.get(0).getImage();
+            String description = bggItems.get(0).getDescription();
+            BGGGameData bggGameData = new BGGGameData(gameId, coverImage, thumbnail, description);
+            return bggGameData;
         } catch (JAXBException e) {
             e.printStackTrace();
             // Log detailed JAXB errors
@@ -147,23 +131,6 @@ public class BGGApiService {
         }
 
         return null;
-    }
-
-    //Helper method to preprocess XML
-    private String preprocessXml(String xmlResponse) {
-        // Replace problematic entity references
-        String processedXml = xmlResponse
-                .replaceAll("&amp;#10;", "\n")  // Replace &#10; with newline
-                .replaceAll("&lt;br&gt;", "\n") // Replace &lt;br&gt; with newline (if needed)
-                .replaceAll("<!--.*?-->", "")  // Remove comments (if needed)
-                .replaceAll("&", "&amp;");  // Replace & with ampersand (if needed)
-
-        // You can add more replacements as needed
-
-        // Unescape other HTML entities
-        processedXml = StringEscapeUtils.unescapeHtml4(processedXml);
-
-        return processedXml;
     }
 
     private void logUnmarshalledResult(BGGSearchResult result) {
