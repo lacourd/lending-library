@@ -183,7 +183,10 @@ public class GameController {
             gameToEdit.getGameDetails().setDescription(description);
             gameToEdit.getGameDetails().setMinPlayers(min);
             gameToEdit.getGameDetails().setMaxPlayers(max);
-            if (gameToEdit.getGameDetails().getCoverImage() == null) {
+            if (gameToEdit.getGameDetails().getCoverImage() == null ||
+                gameToEdit.getGameDetails().getThumbnail() == null ||
+                gameToEdit.getGameDetails().getBggId() == null ||
+                gameToEdit.getGameDetails().getBggDescription() == null) {
                 gameToEdit.getGameDetails().fetchGameDetails(bggApiService, gameToEdit.getSearchableName());
             }
             gameRepository.save(gameToEdit);
