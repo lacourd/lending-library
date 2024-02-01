@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 @Service
 public class BGGApiService {
@@ -49,18 +47,14 @@ public class BGGApiService {
 
     public BGGGameData searchGameAndGetBGGData(String gameTitle) {
         // Step 1: Search for the game and retrieve the game ID with exact match
-        System.out.println(gameTitle);
-        String searchUrlWithExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle + "&exact=1";
-        ResponseEntity<String> searchResponseExact = restTemplate.getForEntity(searchUrlWithExact, String.class);
+        ResponseEntity<String> searchResponseExact = restTemplate.getForEntity(createSearchUrl(gameTitle, true), String.class);
 
         // Extract game ID
         String gameId = extractGameIdFromSearchResponse(searchResponseExact.getBody());
 
-        System.out.println(gameId);
         if (gameId == null) {
             // No exact match found, try searching without exact match
-            String searchUrlWithoutExact = "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle;
-            ResponseEntity<String> searchResponseWithoutExact = restTemplate.getForEntity(searchUrlWithoutExact, String.class);
+            ResponseEntity<String> searchResponseWithoutExact = restTemplate.getForEntity(createSearchUrl(gameTitle, false), String.class);
 
             // Extract game ID
             gameId = extractGameIdFromSearchResponse(searchResponseWithoutExact.getBody());
@@ -68,8 +62,7 @@ public class BGGApiService {
 
         if (gameId != null) {
             // Step 2: Get game details using the game ID
-            String gameDetailsUrl = "https://www.boardgamegeek.com/xmlapi2/thing?id=" + gameId;
-            ResponseEntity<String> gameDetailsResponse = restTemplate.getForEntity(gameDetailsUrl, String.class);
+            ResponseEntity<String> gameDetailsResponse = restTemplate.getForEntity(createGameDetailsUrl(gameId), String.class);
 
             return extractGameDataFromGameDetails(gameDetailsResponse.getBody());
         }
@@ -83,19 +76,11 @@ public class BGGApiService {
     private String extractGameIdFromSearchResponse(String searchResponse) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(BGGSearchResult.class, BGGItem.class);
-//            System.out.println(searchResponse);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
             BGGSearchResult result = (BGGSearchResult) unmarshaller.unmarshal(new StringReader(searchResponse));
 
-            // Log the unmarshalled result
-            logUnmarshalledResult(result);
-
             List<BGGItem> items = result.getItems();
-            if (items != null) {
-                System.out.println(items.toString());
-            }
-
             if (items != null && !items.isEmpty()) {
                 gameId = items.get(0).getId();
                 return gameId;
@@ -132,6 +117,16 @@ public class BGGApiService {
 
         return null;
     }
+
+    private String createSearchUrl(String gameTitle, boolean exactMatch) {
+        String exactMatchQueryParam = exactMatch ? "&exact=1" : "";
+        return "https://boardgamegeek.com/xmlapi2/search?type=boardgame&query=" + gameTitle + exactMatchQueryParam;
+    }
+
+    private String createGameDetailsUrl(String gameId) {
+        return "https://www.boardgamegeek.com/xmlapi2/thing?id=" + gameId;
+    }
+
 
     private void logUnmarshalledResult(BGGSearchResult result) {
         // Log the unmarshalled BGGSearchResult object
