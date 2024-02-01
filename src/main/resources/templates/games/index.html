@@ -9,6 +9,7 @@
 <table class="table table-striped">
  <thead>
  <tr>
+  <th>Thumbnail</th>
   <th>Name</th>
   <th>Description</th>
   <th>Players</th>
@@ -16,16 +17,19 @@
   <th>Available?</th>
  </tr>
  </thead>
- <tr th:each="game : ${games}">
-  <td><a th:href="'/games/detail?gameId=' + ${game.id}" th:text="${game.name}"></a></td>
-  <td th:text="${game.gameDetails.description}"></td>
-  <td th:text="${game.gameDetails.minPlayers + '–' + game.gameDetails.maxPlayers}"></td>
-  <td th:text="${game.storageLocation.name}"></td>
-  <td th:if ="${game.gameDetails.currentLoan == 0}" th:text="Yes"></td>
-  <td th:unless ="${game.gameDetails.currentLoan == 0}" th:text="No"></td>
-  <td th:unless ="${game.gameDetails.currentLoan == 0}"><a th:href="@{/checkouts/return/{id}(id=${game.gameDetails.currentLoan})}">Return</a></td>
-  <td th:if ="${game.gameDetails.isAvailable}"><a th:href="@{/checkouts/new/{id}(id=${game.id})}">Checkout</a></td>
+ <tbody>
+  <tr th:each="game : ${games}">
+    <td><!--class="thumbnail-container"--><img th:src="${game.gameDetails.thumbnail}" th:alt="'Thumbnail cover image for ' + ${game.name}"/></td>
+    <td><a th:href="'/games/detail?gameId=' + ${game.id}" th:text="${game.name}"></a></td>
+    <td th:text="${game.gameDetails.description}"></td>
+    <td th:text="${game.gameDetails.minPlayers + '–' + game.gameDetails.maxPlayers}"></td>
+    <td th:text="${game.storageLocation.name}"></td>
+    <td th:if ="${game.gameDetails.currentLoan == 0}" th:text="Yes"></td>
+    <td th:unless ="${game.gameDetails.currentLoan == 0}" th:text="No"></td>
+    <td th:unless ="${game.gameDetails.currentLoan == 0}"><a th:href="@{/checkouts/return/{id}(id=${game.gameDetails.currentLoan})}">Return</a></td>
+    <td th:if ="${game.gameDetails.isAvailable}"><a th:href="@{/checkouts/new/{id}(id=${game.id})}">Checkout</a></td>
  </tr>
+ </tbody>
 </table>
 
 </body>
