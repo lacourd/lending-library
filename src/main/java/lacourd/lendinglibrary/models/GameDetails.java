@@ -1,5 +1,8 @@
 package lacourd.lendinglibrary.models;
 
+import lacourd.lendinglibrary.models.bggapi.BGGGameData;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
@@ -25,6 +28,13 @@ public class GameDetails extends AbstractEntity{
 
     private String coverImage;
 
+    private String thumbnail;
+
+    @Column(name="bgg_description",columnDefinition="LONGTEXT")
+    private String bggDescription;
+
+    private String bggId;
+
     private boolean isAvailable = true;
 
     private Integer currentLoan = 0;
@@ -40,8 +50,18 @@ public class GameDetails extends AbstractEntity{
 
     public GameDetails() {}
 
-    public void fetchCoverImage(BGGApiService bggApiService, String searchableName) {
-        this.coverImage = bggApiService.searchGameAndGetCoverImage(searchableName);
+//    public void fetchCoverImage(BGGApiService bggApiService, String searchableName) {
+//        this.coverImage = bggApiService.searchGameAndGetCoverImage(searchableName);
+//    }
+
+    public void fetchGameDetails(BGGApiService bggApiService, String searchableName) {
+        BGGGameData bggGameData = bggApiService.searchGameAndGetBGGData(searchableName);
+        if (bggGameData != null) {
+            this.coverImage = bggGameData.getCoverImageUrl();
+            this.thumbnail = bggGameData.getThumbnailUrl();
+            this.bggDescription = bggGameData.getDescription();
+            this.bggId = bggGameData.getId();
+        }
     }
 
     public String getDescription() {
@@ -94,5 +114,33 @@ public class GameDetails extends AbstractEntity{
 
     public String getCoverImage() {
         return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getBggDescription() {
+        return bggDescription;
+    }
+
+    public void setBggDescription(String bggDescription) {
+        this.bggDescription = bggDescription;
+    }
+
+    public String getBggId() {
+        return bggId;
+    }
+
+    public void setBggId(String bggId) {
+        this.bggId = bggId;
     }
 }
