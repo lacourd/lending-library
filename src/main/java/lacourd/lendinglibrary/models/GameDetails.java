@@ -56,10 +56,12 @@ public class GameDetails extends AbstractEntity{
 
     public void fetchGameDetails(BGGApiService bggApiService, String searchableName) {
         BGGGameData bggGameData = bggApiService.searchGameAndGetBGGData(searchableName);
-        this.coverImage = bggGameData.getCoverImageUrl();
-        this.thumbnail = bggGameData.getThumbnailUrl();
-        this.bggDescription = bggGameData.getDescription();
-        this.bggId = bggGameData.getId();
+        if (bggGameData != null) {
+            this.coverImage = bggGameData.getCoverImageUrl();
+            this.thumbnail = bggGameData.getThumbnailUrl();
+            this.bggDescription = bggGameData.getDescription();
+            this.bggId = bggGameData.getId();
+        }
     }
 
     public String getDescription() {
