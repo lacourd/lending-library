@@ -30,7 +30,7 @@ public class GameDetails extends AbstractEntity{
 
     private String thumbnail;
 
-    @Column(name="notes",columnDefinition="LONGTEXT")
+    @Column(name="bgg_description",columnDefinition="LONGTEXT")
     private String bggDescription;
 
     private String bggId;
